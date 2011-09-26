@@ -1,0 +1,60 @@
+\documentclass[12pt]{article}
+
+\title{Adaptive Survey Specification}
+\author{Josh Cutler, Jacob Montgomery}
+\date{September 25th, 2011}
+\begin{document}
+\maketitle
+
+\section*{3 Parameter Logistic Model (3PL)}
+\begin{equation}
+P_{i}(\theta) = c_{i} + \frac{1-c_{i}}{1+e^{1.7a_{i}(\theta-b_{j})}}
+\end{equation}
+
+\subsection*{Calculating Ability Estimates}
+Without data we will use priors for initial ability estimates.  Once data is collected we will calculate $\hat{\theta}_{k(MAP)}$ by finding the maximum of the log posterior density (given the previous answers to selected items).
+
+That is we will maximize:
+\begin{equation}
+f(\theta|u) = f(u|\theta)f(\theta)
+\end{equation}where $f(\theta)$ is our specified prior and $f(u|\theta)$ is the probability that we received responses $u = (u_{1},\cdots,u_{n})$ given $\theta$
+
+\subsection*{Item Selection}
+We select the item that maximizes the information value given our estimate for theta.  Information value for any given item is computed as
+\begin{equation}
+I_{i}(\hat{\theta}_{k(MAP)}) = \frac{[P_{i}^{'}(\hat{\theta}_{k(MAP)})]^{2}}{P_{i}(\hat{\theta}_{k(MAP)})Q_{i}(\hat{\theta}_{k(MAP)})}
+\end{equation}¥
+where $P_{i}(\theta)$ is the 3PL, $Q_{i}(\theta)$ is $[1 - P_{i}(\theta)]$ and 
+\begin{equation}
+P_{i}^{'}(\hat{\theta}_{k(MAP)})=1.7a_{i}Q_{i}(\hat{\theta}_{k(MAP)})\frac{[P_{i}(\hat{\theta}_{k(MAP)})-c_{i}]}{1-c_{i}}
+\end{equation}¥
+
+Algorithmically, we will compute $I_{i}(\hat{\theta}_{k(MAP)})$ for each remaining item that a respondent has not received and then select the one with the highest value.
+
+\subsection*{Stopping Criteria}
+We will stop offering items for evaluation when we have either run out, reached some threshold $n_{max}$ which we have selected to not annoy our users, or reached an estimate that has variance below some pre specified variance $\sigma^{2}_{stop}$. The variance of the estimate of $\hat{\theta}_{k(MAP)}$ will be computed in the following way:
+
+\begin{equation}
+Var(\theta|u) = 1 / [\frac{1}{\sigma^{2}} + \sum_{i=1}^{n}I_{i}(\theta)]_{\theta=\hat{\theta}_{k(MAP)}}
+\end{equation}¥
+
+
+\section*{2 Parameter Logistic Model (2PL)}
+3PL where $c_{i} = 0$
+\begin{equation}
+P_{i}(\theta) = \frac{1}{1+e^{1.7a_{i}(\theta-b_{j})}}
+\end{equation}
+
+\subsection*{Calculating Ability Estimates}
+Without data we will use priors for initial ability estimates.
+
+\section*{1 Parameter Logistic Model (1PL)}
+3PL where $c_{i} = 0$ and $a_{i} = 1$
+\begin{equation}
+P_{i}(\theta) = \frac{1}{1+e^{1.7(\theta-b_{j})}}
+\end{equation}
+
+\subsection*{Calculating Ability Estimates}
+Without data we will use priors for initial ability estimates.
+
+\end{document}
