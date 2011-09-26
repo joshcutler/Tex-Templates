@@ -3,3 +3,5 @@
 *.aux
 *.gz
 .DS_Store
+.dropbox
+Icon*
